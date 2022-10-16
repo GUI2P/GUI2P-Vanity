@@ -1,5 +1,7 @@
 ﻿Imports System.IO
+Imports System.Runtime.Intrinsics
 Imports System.Text.RegularExpressions
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 
 ''' <summary>
 ''' GUI2p Vanity
@@ -152,11 +154,33 @@ Public Class GUI2P
         ' Replace illegal characters with empty
         addressList.Text = rgx.Replace(addressList.Text, "")
 
+        'Remove duplicates
+        Dim lines As String() = addressList.Lines
+        Dim cleaned = lines.Distinct.ToArray
+        addressList.Lines = cleaned
+
         ' Use linq to remove empty lines
         addressList.Lines = addressList.Lines.Where(Function(line) line.Trim() <> String.Empty).ToArray()
         logOutput("Address list sanitized!")
 
     End Sub
+
+    Public Sub RemoveDuplications(Of T)(ByRef arr() As T)
+        Dim filteredList As List(Of T) = New List(Of T)
+
+        For Each element As T In arr
+
+            ' If element is already added in the list, skip the elementi
+            If filteredList.Contains(element) Then Continue For
+
+            ' Add element to the list
+            filteredList.Add(element)
+        Next
+
+        ' Return filtered array
+        arr = filteredList.ToArray()
+    End Sub
+
 
     ''' <summary>
     ''' Thread subroutine - Scans for i2pd exit and moves private.dat to appropriate location
