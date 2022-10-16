@@ -13,6 +13,8 @@ Features:
  - Continuous scanning after finding address
  - Multi-threaded
  - Logging
+ - Duplicate removal
+ - List sorting by alphabetical, length, and random.
  
 ## Dependencies
  
