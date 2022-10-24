@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Chase\\source\\repos\\GUI2P-Vanity\\GUI2P-Vanity\\GUI2P-Vanity.vbproj": {}
+    "C:\\Users\\Chase\\Pictures\\GUI2P-Vanity-main\\GUI2P-Vanity\\GUI2P-Vanity\\GUI2P-Vanity.vbproj": {}
   },
   "projects": {
-    "C:\\Users\\Chase\\source\\repos\\GUI2P-Vanity\\GUI2P-Vanity\\GUI2P-Vanity.vbproj": {
+    "C:\\Users\\Chase\\Pictures\\GUI2P-Vanity-main\\GUI2P-Vanity\\GUI2P-Vanity\\GUI2P-Vanity.vbproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Chase\\source\\repos\\GUI2P-Vanity\\GUI2P-Vanity\\GUI2P-Vanity.vbproj",
+        "projectUniqueName": "C:\\Users\\Chase\\Pictures\\GUI2P-Vanity-main\\GUI2P-Vanity\\GUI2P-Vanity\\GUI2P-Vanity.vbproj",
         "projectName": "GUI2P-Vanity",
-        "projectPath": "C:\\Users\\Chase\\source\\repos\\GUI2P-Vanity\\GUI2P-Vanity\\GUI2P-Vanity.vbproj",
+        "projectPath": "C:\\Users\\Chase\\Pictures\\GUI2P-Vanity-main\\GUI2P-Vanity\\GUI2P-Vanity\\GUI2P-Vanity.vbproj",
         "packagesPath": "C:\\Users\\Chase\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Chase\\source\\repos\\GUI2P-Vanity\\GUI2P-Vanity\\obj\\",
+        "outputPath": "C:\\Users\\Chase\\Pictures\\GUI2P-Vanity-main\\GUI2P-Vanity\\GUI2P-Vanity\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Chase\\AppData\\Roaming\\NuGet\\NuGet.Config",

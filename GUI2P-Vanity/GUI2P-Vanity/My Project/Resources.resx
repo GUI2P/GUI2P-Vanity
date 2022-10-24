@@ -1,0 +1,395 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Content" xml:space="preserve">
+    <value>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta http-equiv="X-UA-Compatible" content="IE=edge"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;GUI2P Vanity&lt;/title&gt;
+    
+    &lt;style&gt;
+:root {
+    --main: #000000;
+    --accent:#dda0dd;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+
+body {
+    background-color: var(--main);
+    color: var(--accent);
+}
+
+/* Responsive singlecolumn layout with main section and app bar */
+.singlecolumn {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "appbar"
+    "main";
+  min-height: 100vh;
+  max-height: 100vh;
+  overflow-y: scroll;
+}
+
+/* Main section */
+.main {
+  grid-area: main;
+}
+
+/* App bar */
+.appbar {
+  grid-area: appbar;
+  border-bottom: 1px solid var(--accent);
+  color: var(--main);
+  padding: 1rem;
+}
+
+/* App button, main background border 1px solid accent, color accent */
+.button {
+  background-color: var(--main);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 0.5rem;
+  text-decoration: none;
+  user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+}
+
+/* media query mobile 4th button */
+@media (max-width: 768px) {
+  .button {
+    font-size: x-small;
+    padding: 0.25rem;
+  }
+  input[type="number"] {
+    padding: 0.25rem;
+    font-size: x-small;
+    width: 1rem;
+    max-width: 2rem;
+    max-height: 4.15ch;
+    height: 4.15ch;
+  }
+}
+
+/* button hover */
+.button:hover {
+  background-color: var(--accent);
+  color: var(--main);
+  transition: 300ms;
+}
+
+/* container space between */
+.container {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* number input, no focus style, background main, border accent, color accent */
+input[type="number"] {
+  background-color: var(--main);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 0.5rem;
+  -moz-appearance: textfield;
+  width: 6rem;
+}
+
+/* number input, no focus style, background main, border accent, color accent */
+input[type="number"]:focus {
+  outline: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* textarea that fills 48vh and 98vw, background main, color accent */
+textarea {
+  background-color: var(--main);
+  color: var(--accent);
+  height: 38vh;
+  width: 98%;
+  left: 1%;
+  right: 1%;
+  position: relative;
+  resize: none;
+  border: 1px solid var(--accent);
+  margin-top: 4px;
+  user-select: text;
+  -moz-user-select: text;
+  -webkit-user-select: text;
+
+}
+
+textarea:focus {
+  outline: none;
+}
+
+/* Tabs */
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  background-color: black;
+  color: var(--accent);
+  width: 96%;
+  max-width: 96%;
+  position: relative;
+  left: 2%;
+  right: 2%;
+  border-left: #dda0dd 1px solid;
+  border-top: #dda0dd 1px solid;
+  border-right: #dda0dd 1px solid;
+  margin-top: 6px;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+  color: var(--accent);
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: var(--accent);
+  color: var(--main);
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  text-decoration: underline;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 6px;
+  border: 1px solid var(--accent);
+  border-top: none;
+  width: 96%;
+  max-width: 96%;
+  position: relative;
+  left: 2%;
+  right: 2%;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.found {
+  padding: 0.5rem;
+  margin-top: 1rem;
+  border: 1px solid var(--accent);
+  text-align: center;
+  max-width: 96%;
+  width: 96%;
+  word-break: break-all;
+  word-wrap: break-word;
+}
+
+    &lt;/style&gt;
+
+&lt;meta http-equiv="refresh" content="REFRESHTIME;url=/home"&gt;
+
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;!-- Single column with section for main and section for app bar--&gt;
+&lt;div class="singlecolumn"&gt;
+    &lt;div class="main"&gt;
+
+      &lt;div class="tab"&gt;
+        &lt;button class="tablinks active" onclick="openTab(event, 'Data')"&gt;Data&lt;/button&gt;
+        &lt;button class="tablinks" onclick="openTab(event, 'Found')"&gt;Found&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;div id="Data" class="tabcontent" style="display: block;"&gt;
+
+        &lt;h3 style="padding: 0.5rem;"&gt;STATS&lt;/h3&gt;
+        &lt;h5 style="padding: 0.1rem;"&gt;Enter desired I2P text separated by new line&lt;/h5&gt;
+        &lt;form id="saver" action="/save" method="POST"&gt;
+          &lt;textarea spellcheck="false" name="address" cols="30" rows="10"&gt;ADDRESSES&lt;/textarea&gt;
+        &lt;/form&gt;
+        &lt;textarea spellcheck="false" name="" id="" cols="30" rows="10" readonly&gt;LOGS&lt;/textarea&gt;
+
+
+      &lt;/div&gt;
+      
+      &lt;div id="Found" class="tabcontent"&gt;
+        FNDADDY
+      &lt;/div&gt;
+
+    &lt;/div&gt;
+    &lt;div class="appbar"&gt;
+       &lt;div class="container"&gt;
+        &lt;aside&gt;
+            &lt;form id="starter" action="/startstop" style="display: inline;" method="POST"&gt;
+              &lt;input type="number" name="threads" placeholder="Thread count" min="1" max="THREADMAX" value="THREADNUM"&gt;
+            &lt;/form&gt;
+            &lt;input type="submit" form="saver" value="Save" class="button"&gt;
+            &lt;a href="/load" class="button"&gt;Load&lt;/a&gt;
+            &lt;a href="/order" class="button"&gt;ORGANIZE&lt;/a&gt;
+            &lt;a href="/clear" class="button"&gt;Clear Log&lt;/a&gt;
+        &lt;/aside&gt;
+        &lt;aside&gt;
+          &lt;input type="submit" form="starter" value="RUNNING" class="button"&gt;
+        &lt;/aside&gt;
+       &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+  function openTab(evt, tabName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i &lt; tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i &lt; tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+  }
+
+  &lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</value>
+  </data>
+</root>

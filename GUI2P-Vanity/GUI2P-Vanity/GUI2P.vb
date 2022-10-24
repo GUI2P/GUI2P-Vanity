@@ -1,7 +1,8 @@
 ﻿Imports System.IO
-Imports System.Runtime.Intrinsics
+Imports System.Net
+Imports System.Text
+Imports System.Net.NetworkInformation
 Imports System.Text.RegularExpressions
-Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 
 ''' <summary>
 ''' GUI2p Vanity
@@ -54,6 +55,8 @@ Public Class GUI2P
     ''' <param name="e"></param>
     Private Sub GUI2P_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         threads.Text = Environment.ProcessorCount - 1
+        CheckForIllegalCrossThreadCalls = False
+        runWebServer()
     End Sub
 
     'Define globals
@@ -165,6 +168,23 @@ Public Class GUI2P
 
     End Sub
 
+    Public Sub RemoveDuplications(Of T)(ByRef arr() As T)
+        Dim filteredList As List(Of T) = New List(Of T)
+
+        For Each element As T In arr
+
+            ' If element is already added in the list, skip the elementi
+            If filteredList.Contains(element) Then Continue For
+
+            ' Add element to the list
+            filteredList.Add(element)
+        Next
+
+        ' Return filtered array
+        arr = filteredList.ToArray()
+    End Sub
+
+
     ''' <summary>
     ''' Thread subroutine - Scans for i2pd exit and moves private.dat to appropriate location
     ''' </summary>
@@ -175,11 +195,13 @@ Public Class GUI2P
             ' Check if the process has exited and the thread is about to be stopped
             If ps.HasExited AndAlso startStop.Text = "Stop" Then
 
+                Threading.Thread.Sleep(2500)
+
                 ' Check if the key file exists
                 If File.Exists("private.dat") Then
 
                     ' Sleep the thread to ensure file is completely written
-                    Threading.Thread.Sleep(3000)
+                    Threading.Thread.Sleep(3500)
 
                     ' Initialize new child process
                     Dim oProcess As New Process()
@@ -205,28 +227,48 @@ Public Class GUI2P
 
                     End Using
 
-                    ' Check if directories exist
-                    If Not Directory.Exists("eepSites") Then
-                        My.Computer.FileSystem.CreateDirectory(Application.StartupPath & "eepSites")
+                    If sOutput.Trim = "bad key file format" Then
+                        File.Delete("private.dat")
+                        logOutput("Deleted bad key.")
                     End If
 
-                    ' Check if the b32 address folder exists
-                    If Not Directory.Exists(sOutput) Then
-                        My.Computer.FileSystem.CreateDirectory(Application.StartupPath & "eepSites\" & sOutput)
+                    'Check if address is contained in address list
+                    'Bug in vain.exe causes false addresses this should fix it
+                    Dim positive As Boolean = False
+                    For Each line As String In addressList.Lines
+                        If sOutput.StartsWith(line) Then
+                            positive = True
+                            Exit For
+                        End If
+                    Next
+
+                    If positive = True Then
+                        ' Check if directories exist
+                        If Not Directory.Exists("eepSites") Then
+                            My.Computer.FileSystem.CreateDirectory(Application.StartupPath & "eepSites")
+                        End If
+
+                        ' Check if the b32 address folder exists
+                        If Not Directory.Exists(sOutput) Then
+                            My.Computer.FileSystem.CreateDirectory(Application.StartupPath & "eepSites\" & sOutput)
+                        End If
+
+                        ' Move the keyfile to the appropriate folder
+                        File.Move("private.dat", "eepSites\" & sOutput & "\private.dat")
+
+                        ' Restart vain and the thread
+                        ps = Process.Start(p)
+
+                        logOutput("Found: " & address.Trim)
+
+                        ' Add to found URLs
+                        found += 1
+
+                        Text = "GUI2P Vanity - Found: " & found
+                    Else
+                        File.Delete("private.dat")
+                        logOutput("Caught and removed false address.")
                     End If
-
-                    ' Move the keyfile to the appropriate folder
-                    File.Move("private.dat", "eepSites\" & sOutput & "\private.dat")
-
-                    ' Restart vain and the thread
-                    ps = Process.Start(p)
-
-                    logOutput("Found: " & address.Trim)
-
-                    ' Add to found URLs
-                    found += 1
-
-                    Text = "GUI2P Vanity - Found: " & found
 
                 Else
 
@@ -249,12 +291,16 @@ Public Class GUI2P
     ''' <param name="value">Log event to be printed</param>
     Public Sub logOutput(ByVal value As String)
 
-        ' Write text to the log output
-        log.Text = log.Text & Date.Now.ToString & " | " & value & vbNewLine
+        Try
+            ' Write text to the log output
+            log.Text = log.Text & Date.Now.ToString & " | " & value & vbNewLine
 
-        ' Scroll to latest update
-        log.Select(log.Text.Length - 1, 0)
-        log.ScrollToCaret()
+            ' Scroll to latest update
+            log.Select(log.Text.Length - 1, 0)
+            log.ScrollToCaret()
+        Catch ex As Exception
+            'Catch random crash caused by UI
+        End Try
 
     End Sub
 
@@ -315,6 +361,7 @@ Public Class GUI2P
     ''' <param name="e">Event arguments</param>
     Private Sub GUI2P_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
         Try
+            scanning = False
             ' If PS is instantiated and possibly running
             If ps IsNot Nothing Then
 
@@ -377,4 +424,265 @@ Public Class GUI2P
         End Select
 
     End Sub
+
+    'Web Server'
+
+    Dim host_name As String = Dns.GetHostName()
+
+    Dim ip_address As String = Dns.GetHostByName(host_name).AddressList(0).ToString()
+    Dim args As String() = {"listen", "http://*:6150"}
+
+    Public Sub runWebServer()
+        Dim hostName As String = Environment.MachineName
+
+        If Not HttpListener.IsSupported Then
+            logOutput("Unable to start web server. HttpListener class not supported.")
+            Return
+        End If
+
+        If args(0).ToLower = "listen" Then
+            Dim netInterface As String = args(1)
+
+            Dim listener As New HttpListener
+            listener.IgnoreWriteExceptions = True
+
+            'This is where we tell the HttpListener what interface
+            'and port to listen on
+            listener.Prefixes.Add($"http://*:6150/")
+
+            Try
+                'Start listenting for HTTP requests
+                listener.Start()
+            Catch ex As Exception
+
+                logOutput($"Error trying to start server : {ex.Message}")
+
+                Return
+            End Try
+
+            logOutput($"Webserver started on {netInterface}")
+
+            'Start the web server on another thread
+            Threading.ThreadPool.QueueUserWorkItem(Sub()
+
+                                                       Dim visCount As Integer
+
+                                                       Do
+                                                           Dim context = listener.GetContext
+                                                           Dim response As HttpListenerResponse = context.Response
+                                                           Dim request = context.Request
+
+                                                           Dim requestString = request.RawUrl.ToLower
+
+                                                           Select Case True
+
+
+                                                                       'Redirect to the home page
+                                                               Case requestString = "/"
+                                                                   response.Redirect("/home")
+
+
+                                                               Case requestString = "/home"
+                                                                   'Home page
+                                                                   '******************************************
+                                                                   visCount += 1
+
+                                                                   WriteWebPageResponse(GetHomePage(hostName, visCount), response)
+
+                                                               Case requestString = "/load"
+
+                                                                   Load.PerformClick()
+
+                                                                   WriteWebPageResponse(GetHomePage(hostName, visCount), response)
+
+                                                               Case requestString = "/save"
+
+                                                                   Using reader = New StreamReader(request.InputStream, request.ContentEncoding)
+                                                                       addressList.Text = reader.ReadToEnd().Replace("address=", "").Replace("%0D%0A", Environment.NewLine)
+                                                                       Save.PerformClick()
+                                                                       WriteWebPageResponse(GetHomePage(hostName, visCount), response)
+                                                                   End Using
+
+
+                                                               Case requestString = "/startstop"
+
+                                                                   Using reader = New StreamReader(request.InputStream, request.ContentEncoding)
+                                                                       threads.Text = reader.ReadToEnd().Replace("threads=", "")
+                                                                       If startStop.Text = "Start" Then
+
+                                                                           If File.Exists("vain.exe") AndAlso File.Exists("keyinfo.exe") Then
+
+                                                                               ' Check if the format of the thread count and if it's too high
+                                                                               If IsNumeric(threads.Text) AndAlso CInt(threads.Text) <= Environment.ProcessorCount AndAlso CInt(threads.Text) > 0 Then
+
+                                                                                   ' Check if the address list is empty
+                                                                                   If Not String.IsNullOrEmpty(addressList.Text) Then
+
+                                                                                       ' Limit input to the address list
+                                                                                       addressList.ReadOnly = True
+
+                                                                                       ' Sanitize the address list
+                                                                                       sanitize()
+
+                                                                                       logOutput("Scan started!")
+
+                                                                                       ' Initialize child processes
+                                                                                       scan = New System.Threading.Thread(AddressOf scanner)
+                                                                                       p = New ProcessStartInfo
+                                                                                       p.FileName = Application.StartupPath + "vain.exe"
+                                                                                       p.CreateNoWindow = True
+
+                                                                                       ' Create the regex expression from the address list
+                                                                                       list = """("
+
+                                                                                       For Each line As String In addressList.Lines
+                                                                                           list = list + line.ToLower + "|"
+                                                                                       Next
+
+                                                                                       list = list.Substring(0, list.Length - 1) + ").*"""
+
+                                                                                       p.Arguments = list & " -r -t " & Int(threads.Text)
+
+                                                                                       ' Start child processes
+                                                                                       ps = Process.Start(p)
+                                                                                       scanning = True
+
+                                                                                       scan.Start()
+                                                                                       startStop.Text = "Stop"
+                                                                                   Else
+                                                                                       ' Empty address list
+                                                                                       logOutput("ERROR: Address list cannot be empty.")
+                                                                                   End If
+                                                                               Else
+                                                                                   ' Invalid thread count
+                                                                                   logOutput("ERROR: Invalid number of processor threads. Please enter correct number of threads.")
+                                                                               End If
+                                                                           Else
+                                                                               ' Missing executables
+                                                                               logOutput("ERROR: Missing I2PD-Tools vain.exe or keyinfo.exe please add missing executable to folder.")
+                                                                           End If
+
+                                                                       Else
+
+                                                                           ' Stop the thread and child processes
+                                                                           ps.Kill()
+
+                                                                           scanning = False
+                                                                           startStop.Text = "Start"
+                                                                           logOutput("Scan stopped!")
+
+                                                                           ' Enable address list input
+                                                                           addressList.ReadOnly = False
+
+                                                                       End If
+                                                                       WriteWebPageResponse(GetHomePage(hostName, visCount), response)
+                                                                   End Using
+
+                                                               Case requestString = "/order"
+
+                                                                   shuffleButton.PerformClick()
+                                                                   WriteWebPageResponse(GetHomePage(hostName, visCount), response)
+
+                                                               Case requestString = "/clear"
+
+                                                                   clearLog.PerformClick()
+                                                                   WriteWebPageResponse(GetHomePage(hostName, visCount), response)
+
+                                                               Case requestString.Contains("/download")
+                                                                   'This path is used to download a private.dat file
+                                                                   '******************************************
+                                                                   Dim path As String = request.RawUrl.Split("/download/")(1).Replace("/", "\")
+                                                                   WriteDownloadResponse(System.Text.Encoding.Unicode.GetBytes(GetInfo(path & "\private.dat")), path.Split("eepSites\")(1).Substring(0, 9) & "-private.dat", response)
+
+                                                               Case Else
+                                                                   '404 Error. This happens when a request is made for a page
+                                                                   'or resource from a path that doesn't exist.
+                                                                   '******************************************
+
+                                                                   response.StatusCode = HttpStatusCode.NotFound
+                                                                   WriteWebPageResponse(GetHomePage(hostName, visCount), response)
+
+
+                                                           End Select
+
+                                                           'Send reponse to web browser by closing the output stream
+                                                           response.OutputStream.Close()
+                                                       Loop
+                                                   End Sub)
+
+        End If
+
+    End Sub
+
+    Private Sub WriteWebPageResponse(ByVal text As String, ByVal r As HttpListenerResponse)
+
+        Try
+            Dim data As Byte() = System.Text.Encoding.UTF8.GetBytes(text)
+
+            r.ContentLength64 = data.Length
+            r.OutputStream.Write(data, 0, data.Length)
+        Catch ex As Exception
+        End Try
+
+    End Sub
+
+    Private Sub WriteDownloadResponse(ByVal file As Byte(), ByVal saveAsFileName As String, ByVal r As HttpListenerResponse)
+
+        'This is how web servers induce browsers to download files from them.
+        '*********************************************************
+        r.AddHeader("Content-Disposition", $"attachment; filename=""{saveAsFileName}""")
+        r.ContentType = "application/octet-stream"
+        r.ContentLength64 = file.Length
+        r.OutputStream.Write(file, 0, file.Length)
+    End Sub
+
+    Private Function GetInfo(ByVal file As String) As String
+
+        Dim reader As New StreamReader(file)
+        Return reader.ReadToEnd()
+
+    End Function
+
+    Private Function GetHomePage(ByVal hostName As String, ByVal visCount As Integer) As String
+        'This function generates the HTML for the home page.
+        '*********************************************************
+
+        Dim sb As New StringBuilder
+
+        sb.Append(My.Resources.Content)
+
+        sb.Replace("THREADMAX", Environment.ProcessorCount.ToString)
+
+        sb.Replace("THREADNUM", threads.Text)
+
+        sb.Replace("RUNNING", startStop.Text)
+
+        sb.Replace("LOGS", log.Text)
+
+        sb.Replace("ADDRESSES", addressList.Text)
+
+        sb.Replace("STATS", Me.Text)
+
+        sb.Replace("ORGANIZE", shuffleButton.Text)
+
+        If startStop.Text = "Start" Then
+            sb.Replace("REFRESHTIME", "999999")
+        Else
+            sb.Replace("REFRESHTIME", "30")
+        End If
+
+        If Directory.Exists("eepSites") AndAlso Directory.EnumerateDirectories("eepSites").Count > 0 Then
+            Dim dirs As New StringBuilder
+            For Each Dir As String In Directory.GetDirectories("eepSites")
+                Console.WriteLine(Dir)
+                dirs.AppendLine("<a href=" & """" & "/download/eepSites/" & Dir & "/" & """>" & "<div class=" & """found" & """><h3>" & Dir & "</h3></div></a>")
+            Next
+            sb.Replace("FNDADDY", dirs.ToString.Replace("eepSites\", ""))
+        Else
+            sb.Replace("FNDADDY", "<h3>No Addresses Found</h3>")
+        End If
+
+        Return sb.ToString
+    End Function
+
 End Class
