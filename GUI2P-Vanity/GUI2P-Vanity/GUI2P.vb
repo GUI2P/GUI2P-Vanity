@@ -1,8 +1,9 @@
-﻿Imports System.IO
+Imports System.IO
 Imports System.Net
 Imports System.Text
 Imports System.Net.NetworkInformation
 Imports System.Text.RegularExpressions
+Imports System.Net.Http
 
 ''' <summary>
 ''' GUI2p Vanity
@@ -442,6 +443,7 @@ Public Class GUI2P
 
         If args(0).ToLower = "listen" Then
             Dim netInterface As String = args(1)
+            Dim userNetInterface As String = netInterface.Replace("*", "127.0.0.1")
 
             Dim listener As New HttpListener
             listener.IgnoreWriteExceptions = True
@@ -460,7 +462,7 @@ Public Class GUI2P
                 Return
             End Try
 
-            logOutput($"Webserver started on {netInterface}")
+            logOutput($"Webserver started on {userNetInterface}")
 
             'Start the web server on another thread
             Threading.ThreadPool.QueueUserWorkItem(Sub()
@@ -493,14 +495,14 @@ Public Class GUI2P
 
                                                                    Load.PerformClick()
 
-                                                                   WriteWebPageResponse(GetHomePage(hostName, visCount), response)
+                                                                   response.Redirect("/home")
 
                                                                Case requestString = "/save"
 
                                                                    Using reader = New StreamReader(request.InputStream, request.ContentEncoding)
                                                                        addressList.Text = reader.ReadToEnd().Replace("address=", "").Replace("%0D%0A", Environment.NewLine)
                                                                        Save.PerformClick()
-                                                                       WriteWebPageResponse(GetHomePage(hostName, visCount), response)
+                                                                       response.Redirect("/home")
                                                                    End Using
 
 
@@ -575,24 +577,32 @@ Public Class GUI2P
                                                                            addressList.ReadOnly = False
 
                                                                        End If
-                                                                       WriteWebPageResponse(GetHomePage(hostName, visCount), response)
+                                                                       response.Redirect("/home")
                                                                    End Using
 
                                                                Case requestString = "/order"
 
                                                                    shuffleButton.PerformClick()
-                                                                   WriteWebPageResponse(GetHomePage(hostName, visCount), response)
+                                                                   response.Redirect("/home")
 
                                                                Case requestString = "/clear"
 
                                                                    clearLog.PerformClick()
-                                                                   WriteWebPageResponse(GetHomePage(hostName, visCount), response)
+                                                                   response.Redirect("/home")
 
                                                                Case requestString.Contains("/download")
                                                                    'This path is used to download a private.dat file
                                                                    '******************************************
                                                                    Dim path As String = request.RawUrl.Split("/download/")(1).Replace("/", "\")
-                                                                   WriteDownloadResponse(System.Text.Encoding.Unicode.GetBytes(GetInfo(path & "\private.dat")), path.Split("eepSites\")(1).Substring(0, 9) & "-private.dat", response)
+                                                                   Dim data() As Byte = File.ReadAllBytes(path & "\private.dat")
+                                                                   WriteDownloadResponse(data, path.Split("eepSites\")(1).Substring(0, 9) & "-private.dat", response)
+
+                                                               Case requestString.Contains("/delete")
+
+                                                                   Dim path As String = request.RawUrl.Split("/delete/")(1).Replace("/", "\")
+                                                                   Directory.Delete(path, True)
+                                                                   logOutput("Deleted " & path.Split("eepSites\")(1).Substring(0))
+                                                                   response.Redirect("/home")
 
                                                                Case Else
                                                                    '404 Error. This happens when a request is made for a page
@@ -600,7 +610,7 @@ Public Class GUI2P
                                                                    '******************************************
 
                                                                    response.StatusCode = HttpStatusCode.NotFound
-                                                                   WriteWebPageResponse(GetHomePage(hostName, visCount), response)
+                                                                   response.Redirect("/home")
 
 
                                                            End Select
@@ -675,7 +685,7 @@ Public Class GUI2P
             Dim dirs As New StringBuilder
             For Each Dir As String In Directory.GetDirectories("eepSites")
                 Console.WriteLine(Dir)
-                dirs.AppendLine("<a href=" & """" & "/download/eepSites/" & Dir & "/" & """>" & "<div class=" & """found" & """><h3>" & Dir & "</h3></div></a>")
+                dirs.AppendLine("<a href=" & """" & "/download/eepSites/" & Dir & "/" & """>" & "<div class=" & """found" & """><h3>" & Dir & "</h3><a class=" & """button" & """ href=" & """" & "/delete/eepSites/" & Dir & """" & ">Delete</a></div></a>")
             Next
             sb.Replace("FNDADDY", dirs.ToString.Replace("eepSites\", ""))
         Else
