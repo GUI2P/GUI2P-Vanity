@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -321,6 +321,54 @@ textarea:focus {
   width: 96%;
   word-break: break-all;
   word-wrap: break-word;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.found &gt; a:link {
+  color: var(--accent);
+  text-decoration: underline;
+}
+.found &gt; a:visited {
+  color: var(--accent);
+  text-decoration: underline;
+}
+.found &gt; a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+.found &gt; a:active {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.found &gt; a &gt; h3 {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.found &gt; .button {
+  display: block;
+  position: relative;
+  right: 10px;
+  word-wrap: normal;
+  word-break: normal;
+  max-height: 5ch;
+}
+/* media query 768 */
+@media (max-width: 768px) {
+  .found &gt; .button {
+    max-height: 4ch;
+  }
+}
+
+/* media query text area 768 height */
+@media (max-height: 768px) {
+  textarea {
+    height: 28vh;
+    max-height: 28vh;
+  }
 }
 
     &lt;/style&gt;
